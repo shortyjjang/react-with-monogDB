@@ -8,7 +8,7 @@ app.use(bodyParser.urlencoded({extended: true}))
 app.use(bodyParser.json())
 
 const cookieParser = require('cookie-parser')
-app.use(cookieParser)
+app.use(cookieParser())
 
 const mongoose = require('mongoose');
 const config = require('./config/key')
@@ -23,7 +23,7 @@ app.get('/', (req, res) => {
 })
 
 //회원가입에 대한 정보를 데이터베이스에 저장
-app.post('/register', (req, res) =>{
+app.post('/register', (req, res) => {
   const user = new User(req.body)
   user.save((err,doc) => {
     if(err) return res.json({success: false, err})
@@ -32,9 +32,9 @@ app.post('/register', (req, res) =>{
 })
 
 //회원가입에 대한 정보를 데이터베이스에 저장
-app.post('/login', (req, res) =>{
+app.post('/login', (req, res) => {
   //이메일 데이터베이스에서 찾기
-  User.findOne({email: req.body.email},(err,user) => {
+  User.findOne({ email: req.body.email }, (err, user) => {
     if(!user) {
       return res.json({
         loginSuccess: false,
@@ -51,9 +51,10 @@ app.post('/login', (req, res) =>{
         if(err) return res.status(400).send(err);
 
         //토큰을 저장
-        res.cookie("x_auth", user.token)
-        .status(200)
-        .json({loginSuccess: true, userId: user._id})
+        res
+          .cookie("x_auth", user.token)
+          .status(200)
+          .json({loginSuccess: true, userId: user._id})
       })
     })
 
@@ -61,7 +62,6 @@ app.post('/login', (req, res) =>{
 
 
 })
-
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)

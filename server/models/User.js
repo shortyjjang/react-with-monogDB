@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
-const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken');
 
 const userSchema = mongoose.Schema({
     name: {
@@ -14,8 +14,7 @@ const userSchema = mongoose.Schema({
         unique: 1
     },
     password: {
-        type: String,
-        maxlength: 50   
+        type: String
     },
     lastname: {
         type: String,
@@ -25,6 +24,7 @@ const userSchema = mongoose.Schema({
         type: Number,
         default: 0
     },
+    image: String,
     token: {
         type: String,
     },
@@ -34,46 +34,48 @@ const userSchema = mongoose.Schema({
 });
 
 //회원정보 저장
-userSchema.pre('save',function(next){
-    const user = this;
-
-    //비밀번호 변경시에만 활성화
-    if(user.isModified('password')){
-        //비밀번호 암호화
-        bcrypt.genSalt(saltRounds,function(err, salt){
+userSchema.pre('save', function( next ) {
+    var user = this;
+    
+    if(user.isModified('password')){    
+        // console.log('password changed')
+        bcrypt.genSalt(saltRounds, function(err, salt){
             if(err) return next(err);
-
+    
             bcrypt.hash(user.password, salt, function(err, hash){
                 if(err) return next(err);
-                user.password = hash
-                next();
+                user.password = hash 
+                next()
             })
         })
-    }else{
-        next();
+    } else {
+        next()
     }
-
-})
+});
 
 //비밀번호비교
-userSchema.methods.comparePassword = function(pw,callback) {
-    bcrypt.compare(pw, this.password, function(err, isMatch){
-        if(err) return callback(err),
-        callback(null, isMatch)
+userSchema.methods.comparePassword = function(plainPassword,cb){
+    bcrypt.compare(plainPassword, this.password, function(err, isMatch){
+        if (err) return cb(err);
+        cb(null, isMatch)
     })
 }
 
 //토큰생성
-userSchema.methods.generateToken = function(callback) {
-    const user = this;
-    const token = jwt.sign(user._id.toHexString(), 'secretToken')
+userSchema.methods.generateToken = function(cb) {
+    var user = this;
+    console.log('user',user)
+    console.log('userSchema', userSchema)
+    var token =  jwt.sign(user._id.toHexString(),'secret')
+    // var oneHour = moment().add(1, 'hour').valueOf();
+
+    // user.tokenExp = oneHour;
     user.token = token;
-    user.save(function(err,user){
-        if(err) return callback(err)
-        callback(null, user)
+    user.save(function (err, user){
+        if(err) return cb(err)
+        cb(null, user);
     })
 }
-
 
 const User = mongoose.model('User', userSchema);
 module.exports = { User }
