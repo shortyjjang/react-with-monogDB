@@ -2,38 +2,41 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const jwt = require('jsonwebtoken');
+const moment = require("moment");
+
 
 const userSchema = mongoose.Schema({
     name: {
-        type: String,
-        maxlength: 50
+        type:String,
+        maxlength:50
     },
     email: {
-        type: String,
-        trim: true,
-        unique: 1
+        type:String,
+        trim:true,
+        unique: 1 
     },
     password: {
-        type: String
+        type: String,
+        minglength: 5
     },
     lastname: {
-        type: String,
+        type:String,
         maxlength: 50
     },
-    role: {
-        type: Number,
-        default: 0
+    role : {
+        type:Number,
+        default: 0 
     },
     image: String,
-    token: {
+    token : {
         type: String,
     },
-    tokenExp: {
-        type: Number,
+    tokenExp :{
+        type: Number
     }
-});
+})
 
-//회원정보 저장
+
 userSchema.pre('save', function( next ) {
     var user = this;
     
@@ -53,7 +56,6 @@ userSchema.pre('save', function( next ) {
     }
 });
 
-//비밀번호비교
 userSchema.methods.comparePassword = function(plainPassword,cb){
     bcrypt.compare(plainPassword, this.password, function(err, isMatch){
         if (err) return cb(err);
@@ -61,15 +63,14 @@ userSchema.methods.comparePassword = function(plainPassword,cb){
     })
 }
 
-//토큰생성
 userSchema.methods.generateToken = function(cb) {
     var user = this;
-    console.log('user',user)
-    console.log('userSchema', userSchema)
+    // console.log('user',user)
+    // console.log('userSchema', userSchema)
     var token =  jwt.sign(user._id.toHexString(),'secret')
-    // var oneHour = moment().add(1, 'hour').valueOf();
+    var oneHour = moment().add(1, 'hour').valueOf();
 
-    // user.tokenExp = oneHour;
+    user.tokenExp = oneHour;
     user.token = token;
     user.save(function (err, user){
         if(err) return cb(err)
@@ -77,7 +78,6 @@ userSchema.methods.generateToken = function(cb) {
     })
 }
 
-//토큰지우기
 userSchema.statics.findByToken = function (token, cb) {
     var user = this;
 
@@ -88,7 +88,6 @@ userSchema.statics.findByToken = function (token, cb) {
         })
     })
 }
-
 
 const User = mongoose.model('User', userSchema);
 module.exports = { User }
