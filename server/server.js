@@ -35,6 +35,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/uploads', express.static('uploads'));
 
 //사용자정보
+app.use('/api/product', require('./router/product'));
+
+//사용자정보
 app.use('/api/user', require('./router/user'));
 
 app.listen(port, () => {
