@@ -1,19 +1,24 @@
 import React, { useState } from 'react';
+import {useNavigate} from 'react-router-dom'
 import ImageUpload from '../../utils/ImageUpload';
+import axios from 'axios';
+import {PRODUCT_SERVER} from '../../Config'
 
 function AddProduct(props) {
-    const collections = [
+    const navigate = useNavigate();
+    const collectionss = [
         {key: 1, name: "Men"},
         {key: 2, name: "Women"},
         {key: 3, name: "Shoes"},
         {key: 4, name: "Bag"},
     ]
+    const [formErrorMessage, setFormErrorMessage] = useState('')
     const [values, setValue] = useState({
         image: [],
         title: '',
         description: '',
         price: '',
-        collection: 1,
+        collections: 1,
     })
     const onChange = (e) => {
         const {name, value} = e.target;
@@ -24,12 +29,26 @@ function AddProduct(props) {
     }
     const handleSubmit = (e) => {
         e.preventDefault();
-        const newProduct = values;
+        const newProduct = {
+            ...values,
+            writer: props.user.userData._id
+        };
+        if(!values.title || !values.image || !values.description || !values.price || !values.collections) return setFormErrorMessage('모든 항목을 입력해주십시오.')
+
+        axios.post(`${PRODUCT_SERVER}`, newProduct)
+        .then(res => {
+            if(res.data.success) {
+                alert('상품이 추가 되었습니다.');
+                navigate('/')
+            }else {
+                alert('상품이 추가 되지 못했습니다.')
+            }
+        })
     }
     return (
         <form onSubmit={handleSubmit}>
             <div>
-                <ImageUpload />
+                <ImageUpload updateImages={(files) => setValue({...values, image: [...files]})}/>
             </div>
             <div>
                 <label>Title</label>
@@ -44,11 +63,12 @@ function AddProduct(props) {
                 <input type="text" name="price" onChange={onChange} value={values.price} />
             </div>
             <div>
-                <label>Collection</label>
-                <select name="collection" onChange={onChange} value={values.collection}>
-                    {collections.map(it => <option key={it.key} value={it.key}>{it.name}</option>)}
+                <label>collections</label>
+                <select name="collections" onChange={onChange} value={values.collections}>
+                    {collectionss.map(it => <option key={it.key} value={it.key}>{it.name}</option>)}
                 </select>
             </div>
+            {formErrorMessage && ({formErrorMessage})}
             <button type="submit">Save</button>
         </form>
     );

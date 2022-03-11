@@ -15,6 +15,7 @@ import Register from './components/views/sign/Register';
 import Auth from './Auth';
 import {composeWithDevTools} from 'redux-devtools-extension'
 import AddProduct from './components/views/product/AddProduct';
+import registerServiceWorker from './registerServiceWorker';
 
 const createStoreWithMiddleware = applyMiddleware(promiseMiddleware, ReduxThunk)(createStore)
 const AuthHome = Auth(Home, null);
@@ -42,3 +43,4 @@ ReactDOM.render(
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
+registerServiceWorker();
