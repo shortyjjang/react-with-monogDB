@@ -22,8 +22,6 @@ function NavBar(props) {
           <li><NavLink to="/">Home</NavLink></li>
           <li><NavLink to="/login">Login</NavLink></li>
           <li><NavLink to="/signup">Register</NavLink></li>
-          <li><NavLink to="/products/add">Add Product</NavLink></li>
-          <li><button onClick={handleLogout}>Logout</button></li>
         </ul>
     )} else {
     return (

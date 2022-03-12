@@ -3,15 +3,10 @@ import {useNavigate} from 'react-router-dom'
 import ImageUpload from '../../utils/ImageUpload';
 import axios from 'axios';
 import {PRODUCT_SERVER} from '../../Config'
+import {collectionsList} from './section/data'
 
 function AddProduct(props) {
     const navigate = useNavigate();
-    const collectionss = [
-        {key: 1, name: "Men"},
-        {key: 2, name: "Women"},
-        {key: 3, name: "Shoes"},
-        {key: 4, name: "Bag"},
-    ]
     const [formErrorMessage, setFormErrorMessage] = useState('')
     const [values, setValue] = useState({
         image: [],
@@ -65,7 +60,7 @@ function AddProduct(props) {
             <div>
                 <label>collections</label>
                 <select name="collections" onChange={onChange} value={values.collections}>
-                    {collectionss.map(it => <option key={it.key} value={it.key}>{it.name}</option>)}
+                    {collectionsList.map(it => <option key={it.key} value={it.key}>{it.name}</option>)}
                 </select>
             </div>
             {formErrorMessage && ({formErrorMessage})}

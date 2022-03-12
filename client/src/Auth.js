@@ -14,7 +14,6 @@ export default function Auth(SpecificComponent, option, adminRoute = null) {
         useEffect(() => {
             //To know my current status, send Auth request 
             dispatch(auth()).then(response => {
-                console.log(response.payload)
                 //Not Loggined in Status 
                 if (!response.payload.isAuth) {
                     if (option) {
@@ -38,7 +37,7 @@ export default function Auth(SpecificComponent, option, adminRoute = null) {
         }, [])
 
         return (
-            <SpecificComponent option={option} adminRoute={adminRoute} user={user} />
+            <SpecificComponent {...props} option={option} adminRoute={adminRoute} user={user} />
         )
     }
     return AuthenticationCheck
