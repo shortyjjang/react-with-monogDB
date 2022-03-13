@@ -37,7 +37,7 @@ export default function Auth(SpecificComponent, option, adminRoute = null) {
         }, [])
 
         return (
-            <SpecificComponent {...props} option={option} adminRoute={adminRoute} user={user} />
+            <SpecificComponent {...props} user={user} />
         )
     }
     return AuthenticationCheck

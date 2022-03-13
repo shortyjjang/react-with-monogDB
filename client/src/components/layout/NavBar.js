@@ -28,6 +28,7 @@ function NavBar(props) {
         <ul>
           <li><NavLink to="/">Home</NavLink></li>
           <li><NavLink to="/products/add">Add Product</NavLink></li>
+          <li><NavLink to="/cart">Cart</NavLink></li>
           <li><button onClick={handleLogout}>Logout</button></li>
         </ul>
     )};
