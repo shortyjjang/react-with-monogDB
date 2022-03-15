@@ -34,6 +34,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 //이미지 저장
 app.use('/uploads', express.static('uploads'));
 
+//댓글
+app.use('/api/comment', require('./router/comment'));
+
 //사용자정보
 app.use('/api/product', require('./router/product'));
 

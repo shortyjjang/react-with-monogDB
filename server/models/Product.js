@@ -7,7 +7,7 @@ const moment = require("moment");
 
 const productSchema = mongoose.Schema({
     writer:{
-        type: Schema.Types.ObjectID,
+        type: Schema.Types.ObjectId,
         ref: 'User'
     },
     title: {

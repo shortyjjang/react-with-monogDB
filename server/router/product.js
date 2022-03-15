@@ -85,11 +85,17 @@ router.get('/products_by_id',(req, res) => {
     let type = req.query.type
     let productId = req.query.id
 
-    Product.find({_id: productId})
+    if(type === 'array'){
+        let ids = req.query.id.split(',')
+        productId = ids.map(items => {
+            return items
+        })
+    }
+    Product.find({_id: { $in: productId }})
     .populate('writer')
     .exec((err, product) => {
         if(err) return res.status(400).send({success:false, err})
-        return res.status(200).send({success:true, product})
+        return res.status(200).send(product)
     })
 })
 module.exports = router;

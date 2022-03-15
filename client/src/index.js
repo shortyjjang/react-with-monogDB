@@ -11,7 +11,6 @@ import "./assets/css/layout.css"
 import Auth from './Auth';
 import {composeWithDevTools} from 'redux-devtools-extension'
 import registerServiceWorker from './registerServiceWorker';
-import "antd/dist/antd.css";
 import './assets/css/layout.css'
 
 import ProductList from './components/views/product/ProductList';

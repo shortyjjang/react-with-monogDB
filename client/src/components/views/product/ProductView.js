@@ -22,11 +22,14 @@ function ProductView(props) {
         .catch((error) => navigate('/'));
 
         axios.post(`http://localhost:5000/api/comment/getComments`, {productId: productId})
-        .then(res => setCommentList(res.data));
+        .then(res => setCommentList(res.data.result));
         
-    },[setProducts])
+    },[setProducts, setCommentList])
     const addToCartHandler = () => {
         dispatch(addToCart(productId))
+    }
+    const refreshComments = (newComment) => {
+        setCommentList(commentList.concat(newComment))
     }
     return (
         <>
@@ -42,7 +45,7 @@ function ProductView(props) {
             <div>조회수: {productInfo.views}</div>
             <div>{productInfo.description}</div>
             <div><button onClick={addToCartHandler}>장바구니에 담기</button></div>
-            <Comment productId={productId} commentList={commentList}/>
+            <Comment productId={productId} commentList={commentList} refreshComments={refreshComments} />
             <Link to="/">목록</Link>
         </>
     );

@@ -3,6 +3,7 @@ import axios from 'axios';
 import {useSelector} from 'react-redux'
 import SingleCommet from '../../../utils/SingleCommet';
 import {Button, Input} from 'antd';
+import ReplyComment from '../../../utils/ReplyComment';
 
 const {TextArea} = Input;
 
@@ -20,13 +21,21 @@ function Comment(props) {
 
         axios.post(`http://localhost:5000/api/comment/saveComment`, body)
         .then(res => {
-            console.log( res.data)
+            props.refreshComments(res.data.result)
+            setCommentVal("")
         })
     }
     return (
         <div>
             <h2>댓글</h2>
-            {props.commentList && props.commentList.map((comment, index) => <SingleCommet productId={props.productId} key={index} comment={comment} />)}
+            {props.commentList && 
+            props.commentList.filter(comment => !comment.responseTo).map((comment, index) => 
+            <div key={index}>
+                <SingleCommet productId={props.productId} comment={comment} refreshComments={props.refreshComments}  user={user} />
+                <ReplyComment commentList={props.commentList} refreshComments={props.refreshComments} parentCommentId={comment._id} user={user}/>
+            </div>
+            )
+            }
             <hr />
             <form onSubmit={submitComment}>
                 <TextArea rows={4} placeholder="Please input comment" onChange={(e) => setCommentVal(e.target.value)} value={commentVal} />
